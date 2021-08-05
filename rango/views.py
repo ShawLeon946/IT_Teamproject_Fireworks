@@ -1,40 +1,30 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from datetime import datetime
+from rango.forms import article
 
 def index(request):
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
 
     context_dict = {}
-    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
+    context_dict['boldmessage'] = 'Dessert Desire'
     context_dict['categories'] = category_list
     context_dict['pages'] = page_list
-    
-    # response = render(request, 'rango/index.html', context=context_dict)
-    # visitor_cookie_handler(request, response)
-    # return response
-    
-    #request.session.set_test_cookie() 
     visitor_cookie_handler(request)
-
-    return render(request, 'rango/index.html', context=context_dict)
+    return render(request, 'base.html', context=context_dict)
 
 def about(request):
-
-    #  if request.session.test_cookie_worked():
-    #  print("Test cookies worked!")
-    #  request.session.delete_test_cookie()
     context_dict = {}
     visitor_cookie_handler(request)
     context_dict['visits'] = request.session['visits']
-
     return render(request, 'rango/about.html', context=context_dict)
+
 
 def show_category(request, category_name_slug):
     context_dict = {}
@@ -136,7 +126,7 @@ def user_login(request):
                 login(request, user)
                 return redirect(reverse('rango:index'))
             else:
-                return HttpResponse("Your Rango account is disabled.")
+                return HttpResponse("Your account is disabled.")
         else:
             print(f"Invalid login details: {username}, {password}")
             return HttpResponse("Invalid login details supplied.")
@@ -158,6 +148,7 @@ def get_server_side_cookie(request, cookie, default_val=None):
         val = default_val
     return val
 
+
 def visitor_cookie_handler(request):
     visits = int(get_server_side_cookie(request, 'visits', '1'))
     last_visit_cookie = get_server_side_cookie(request, 'last_visit', str(datetime.now()))
@@ -170,3 +161,24 @@ def visitor_cookie_handler(request):
         request.session['last_visit'] = last_visit_cookie
     
     request.session['visits'] = visits
+
+
+def contact(request):
+    context_dict = {}
+    context_dict['boldmessage'] = 'Please contact us via email:xxxxx@student.gla.ac.uk'
+    visitor_cookie_handler(request)
+    context_dict['visits'] = request.session['visits']
+    return render(request, 'rango/about.html', context=context_dict)
+
+
+class DessertDetailView(request):
+    model = Page
+    template_name = 'dessert/catagories/<dessert_id>'
+
+    def get_context_data(self, **kwargs):
+        context = super(DessertDetailView,
+                        self).get_context_data(**kwargs)
+        context['article'] = article(
+            initial={'aerticle': self.object})
+        return context
+
