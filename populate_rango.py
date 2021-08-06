@@ -7,11 +7,6 @@ django.setup()
 from rango.models import Category, Page
 
 def populate():
-    # First, we will create lists of dictionaries containing the pages
-    # we want to add into each category.
-    # Then we will create a dictionary of dictionaries for our categories. 
-    # This might seem a little bit confusing, but it allows us to iterate 
-    # through each data structure, and add the data to our models
     
     python_pages = [
         {'title': 'Official Python Tutorial',
@@ -70,7 +65,6 @@ def add_cat(name, views=0, likes=0):
     c.save()
     return c
 
-# Start execution here!
 if __name__ == '__main__':
     print('Starting Rango population script...')
     populate()
