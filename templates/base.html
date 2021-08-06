@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+    <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
+    <title>{% block title %}{% endblock %}</title>
+    {% block header %}
+    {% endblock %}
+    <style>
+        body {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: #5a5a5a;
+}
+    </style>
+</head>
+<body>
+{% include 'components/nav.html' %}
+<main role="main">
+<div class="container">
+    <h2 style="text-align: center">{% block page_title %}{% endblock %}</h2>
+    {% block content %}
+
+    {% endblock %}
+</div>
+</main>
+{% block js %}
+{% endblock %}
+</body>
+</html>
