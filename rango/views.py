@@ -30,7 +30,8 @@ def index(request):
     #request.session.set_test_cookie() 
     visitor_cookie_handler(request)
 
-    return render(request, 'base.html', context=context_dict)
+    return render(request, 'rango/home.html', context=context_dict)
+
 
 def about(request):
 
@@ -261,3 +262,15 @@ class LikePage(LoginRequiredMixin, SingleObjectMixin, View):
         obj = self.get_object()
         FavoritePage.objects.create(page=obj, user=request.user)
         return redirect('/')
+
+
+class TrendingView(TemplateView):
+    template_name = 'rango/trending.html'
+
+
+class DiscoveryView(TemplateView):
+    template_name = 'rango/discovery.html'
+
+
+class BakersView(TemplateView):
+    template_name = 'rango/bakers.html'

@@ -20,5 +20,8 @@ urlpatterns = [
     path('page-detail/<slug:pk>', views.PageDetailView.as_view(), name='page-detail'),
     path('productdetail/<slug:pk>', views.ProductDetailView.as_view(), name='product-detail'),
     path('likeproduct/<slug:pk>', views.LikeProduct.as_view(), name='product-like'),
-    path('likepage/<slug:pk>', views.LikePage.as_view(), name='page-like')
+    path('likepage/<slug:pk>', views.LikePage.as_view(), name='page-like'),
+    path('trending/', views.TrendingView.as_view(), name='trending'),
+    path('discovery/', views.DiscoveryView.as_view(), name='discovery'),
+    path('bakers/', views.BakersView.as_view(), name='bakers')
 ]

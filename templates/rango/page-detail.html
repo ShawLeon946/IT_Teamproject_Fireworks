@@ -9,9 +9,7 @@ Page Detail
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <h2>{{ object.title }}</h2>
-        <p>Category: {{ object.category }}</p>
-        <p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
-    </div>
+    <h2>{{ object.title }}</h2>
+    <p>Category: {{ object.category }}</p>
+    <p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
 {% endblock %}
