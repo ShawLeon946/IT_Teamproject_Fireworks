@@ -1,11 +1,16 @@
-{% extends 'rango/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
-{% block title_block %}
-    Register
+{% block title %}
+Register
 {% endblock %}
 
-{% block body_block %}
+{% block page_title %}
+Register
+{% endblock %}
+
+{% block content %}
 <h1>Register for Rango</h1>
 {% if registered %}
 Rango says: <strong>thank you for registering!</strong>
@@ -15,10 +20,11 @@ Rango says: <strong>register here!</strong><br />
 <form id="user_form" method="post" action="{% url 'rango:register' %}" enctype="multipart/form-data">
    
     {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-
-    <input type="submit" name="submit" value="Register" />
+    {{ user_form|crispy }}
+    {{ profile_form|crispy }}
+    <a href="{% url 'rango:login' %}" class="btn-link">Already Have a account?</a>
+    <br><br>
+    <button type="submit" class="btn btn-primary">Register</button>
 </form>
 {% endif %}
 {% endblock %}

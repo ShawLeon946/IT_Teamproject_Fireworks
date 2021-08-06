@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block page_title%}
+Profile
+{% endblock %}
+
+{% block content %}
+<div>
+<h1>Profile</h1>
+<ul class="list-group">
+  <li class="list-group-item">Username: {{ request.user.username }}</li>
+  <li class="list-group-item">Email: {{ request.user.email }}</li>
+</ul>
+</div>
+<br>
+<div class="row">
+    <h1>
+        Like Products
+    </h1>
+</div>
+<div class="card card-body">
+    {% for product in request.user.favoriteproduct_set.all %}
+    <div class="d-flex" onclick="window.location.href='{% url 'rango:product-detail' product.product.pk %}'">
+
+        <img src="/media/{{ product.product.img }}" alt="" style="height: 80px;width: 80px">
+        <div>
+            {{ product.product.name }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<br>
+<div class="row">
+    <h1>
+        Like Pages
+    </h1>
+</div>
+<div class="card card-body">
+{% for page in request.user.favoritepage_set.all %}
+    <p>
+        <a href="{{ page.page.url }}">{{ page.page.title }}</a>
+    </p>
+{% endfor %}
+</div>
+{% endblock %}

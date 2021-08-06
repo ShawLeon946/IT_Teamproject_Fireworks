@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Categories
+{% endblock %}
+
+{% block page_title %}
+Categories
+{% endblock %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+    <a href="{% url 'rango:add_category' %}" class="btn btn-primary">Add Category</a>
+{% endif %}
+<div style="margin-top: 20px">
+{% for i in object_list %}
+    <a href="{% url 'rango:show_category' i.slug %}" style="font-size: 20px">{{ i.name }}</a> <br>
+    <hr>
+{% endfor %}
+</div>
+{% endblock %}
