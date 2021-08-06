@@ -16,5 +16,9 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('profile/', views.Profile.as_view(), name='profile'),
     path('addproduct/', views.ProductAddView.as_view(), name='product-add'),
-    path('productlist/', views.ProductListView.as_view(), name='product-list')
+    path('productlist/', views.ProductListView.as_view(), name='product-list'),
+    path('page-detail/<slug:pk>', views.PageDetailView.as_view(), name='page-detail'),
+    path('productdetail/<slug:pk>', views.ProductDetailView.as_view(), name='product-detail'),
+    path('likeproduct/<slug:pk>', views.LikeProduct.as_view(), name='product-like'),
+    path('likepage/<slug:pk>', views.LikePage.as_view(), name='page-like')
 ]

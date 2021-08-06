@@ -3,11 +3,16 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, TemplateView, CreateView
+from django.views import View
+from django.views.generic import ListView, TemplateView, CreateView, DetailView, FormView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from rango.models import Category, Page, Product
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm, ProductForm
+from rango.models import Category, Page, Product, FavoriteProduct, FavoritePage
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm, ProductForm, FilterForm
 from datetime import datetime
+
 
 def index(request):
     category_list = Category.objects.order_by('-likes')[:5]
@@ -184,13 +189,75 @@ class Profile(TemplateView):
     template_name = 'rango/profile.html'
 
 
-class ProductAddView(CreateView):
+class ProductAddView(LoginRequiredMixin, CreateView):
     model = Product
     form = ProductForm
     template_name = 'rango/product-add.html'
     fields = '__all__'
 
 
-class ProductListView(ListView):
+class ProductListView(FormMixin, ListView):
     model = Product
     template_name = 'rango/product-list.html'
+    form_class = FilterForm
+
+    def get_queryset(self):
+        queryset = super(ProductListView, self).get_queryset()
+        form = self.get_form()
+        if form.is_valid():
+            data = form.cleaned_data
+            data = {k: v for k, v in data.items() if v}
+            queryset = queryset.filter(**data)
+
+        q = self.request.GET.get('q')
+        if q is not None:
+            queryset = queryset.filter(name__icontains=q)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        form = self.get_form()
+
+        context['form'] = form
+        return context
+
+    def get_form_kwargs(self):
+        """Return the keyword arguments for instantiating the form."""
+        kwargs = {
+            'initial': self.get_initial(),
+            'prefix': self.get_prefix(),
+        }
+
+        kwargs.update({
+            'data': self.request.GET,
+        })
+        return kwargs
+
+
+class PageDetailView(DetailView):
+    model = Page
+    template_name = 'rango/page-detail.html'
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'rango/product-detail.html'
+
+
+class LikeProduct(LoginRequiredMixin, SingleObjectMixin, View):
+    model = Product
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        FavoriteProduct.objects.create(product=obj, user=request.user)
+        return redirect('rango:product-detail', pk=obj.pk)
+
+
+class LikePage(LoginRequiredMixin, SingleObjectMixin, View):
+    model = Page
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        FavoritePage.objects.create(page=obj, user=request.user)
+        return redirect('/')
